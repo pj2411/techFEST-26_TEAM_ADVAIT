@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SLIET Hostel Management System - Sant Longowal Institute of Engineering &amp; Technology</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+    <!-- QR Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="brand">
+            <h2>SLIET HOSTEL SYSTEM</h2>
+        </div>
+
+        <!-- Controls -->
+        <div class="header-controls">
+            <div class="selector-group">
+                <label for="hostelSelect">Select Hostel:</label>
+                <select id="hostelSelect" onchange="switchHostel(this.value)">
+                    <optgroup label="Boys Hostels (BH)">
+                        <option value="BH-01">BH-01 - Birbal Sahni House</option>
+                        <option value="BH-02">BH-02 - Satish Dhawan House</option>
+                        <option value="BH-03">BH-03 - Meghnad Saha House</option>
+                        <option value="BH-04">BH-04 - M. Visvesvaraya House</option>
+                        <option value="BH-05">BH-05 - CV Raman House</option>
+                        <option value="BH-06">BH-06 - SN Bose House</option>
+                        <option value="BH-07">BH-07 - Homi J. Bhabha House</option>
+                        <option value="BH-08">BH-08 - SS Bhatnagar House</option>
+                        <option value="BH-09">BH-09 - Meghraj Goyal House</option>
+                        <option value="BH-10">BH-10 - APJ Abdul Kalam House</option>
+                    </optgroup>
+                    <optgroup label="Girls Hostels (GH)">
+                        <option value="GH-01">GH-01 - Kamala Sohonie House</option>
+                        <option value="GH-02">GH-02 - Kalpana Chawla House</option>
+                        <option value="GH-03">GH-03 - Anandi Gopal Joshi House</option>
+                        <option value="PG-GH">PG Hostel (Girls)</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="selector-group">
+                <label for="roleSelect">View Mode:</label>
+                <select id="roleSelect" onchange="switchView(this.value)">
+                    <option value="student">Student Portal</option>
+                    <option value="admin">Admin / Warden</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav-bar">
+        <button class="tab-btn active" onclick="showTab('dashboard')">Dashboard</button>
+        <button class="tab-btn" onclick="showTab('rooms')">Rooms & Beds</button>
+        <button class="tab-btn" onclick="showTab('passes')">Out-Pass (QR)</button>
+        <button class="tab-btn" onclick="showTab('complaints')">Complaints</button>
+        <button class="tab-btn" onclick="showTab('mess')">Mess Menu</button>
+        <button class="tab-btn" onclick="showTab('notices')">Notice Board</button>
+    </nav>
+
+    <!-- Notice Bar -->
+    <div class="notice-bar">
+        <strong>Notice:</strong> <span id="noticeText">Hostel gates close at 10:00 PM (Boys Hostels) and 7:00 PM (Girls
+            Hostels). Mess feedback meeting on Saturday at 5 PM.</span>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container">
+
+        <!-- Dashboard -->
+        <section id="tab-dashboard" class="tab-content active">
+            <div id="dashStudentProfile" class="card">
+                <!-- Profile -->
+            </div>
+
+            <div class="two-col" style="margin-top: 16px;">
+                <div class="card">
+                    <h3>Hostel Information</h3>
+                    <div id="dashHostelInfo"></div>
+                </div>
+                <div class="card">
+                    <h3>Quick Actions & Gate Status</h3>
+                    <div id="dashQuickActions"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rooms -->
+        <section id="tab-rooms" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3>2D Hostel Floor & Bed Map</h3>
+                    <div class="floor-btns">
+                        <button class="btn btn-sm active" onclick="setFloor(1)">Ground Floor</button>
+                        <button class="btn btn-sm" onclick="setFloor(2)">Floor 1</button>
+                        <button class="btn btn-sm" onclick="setFloor(3)">Floor 2</button>
+                    </div>
+                </div>
+                <p class="hint-text">
+                    <span style="display: inline-block; width: 10px; height: 10px; background: #22c55e; margin-right: 4px;"></span> Vacant (Click to apply)
+                    &bull; <span style="display: inline-block; width: 10px; height: 10px; background: #eab308; margin: 0 4px 0 10px;"></span> Requested / Pending Verification
+                    &bull; <span style="display: inline-block; width: 10px; height: 10px; background: #ef4444; margin: 0 4px 0 10px;"></span> Allocated
+                </p>
+
+                <div class="room-grid" id="roomGrid">
+                    <!-- Grid -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Passes -->
+        <section id="tab-passes" class="tab-content">
+            <div class="two-col">
+                <!-- Pass Form -->
+                <div class="card">
+                    <h3>Request Gate Out-Pass</h3>
+                    <form id="passForm" onsubmit="handlePassSubmit(event)">
+                        <div class="form-group">
+                            <label>Student Name:</label>
+                            <input type="text" id="passStudent" required placeholder="Full Name" />
+                        </div>
+                        <div class="form-group">
+                            <label>Room No:</label>
+                            <input type="text" id="passRoom" required placeholder="e.g. 101-A" />
+                        </div>
+                        <div class="form-group">
+                            <label>Reason for Leave:</label>
+                            <input type="text" id="passReason" required placeholder="Market, Library, Home visit..." />
+                        </div>
+                        <div class="form-group">
+                            <label>Return Time:</label>
+                            <input type="time" id="passTime" required value="20:30" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Generate Digital Pass</button>
+                    </form>
+                </div>
+
+                <!-- Pass Preview -->
+                <div class="card">
+                    <h3>Digital Security Pass</h3>
+                    <div id="activePassDisplay" class="pass-box">
+                        <p class="hint-text">No pass selected yet. Fill out the form or select a pass below.</p>
+                    </div>
+                    <div id="qrcode" class="qr-container"></div>
+                </div>
+            </div>
+
+            <!-- Pass List -->
+            <div class="card" style="margin-top: 15px;">
+                <h3>Recent Gate Passes</h3>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Pass ID</th>
+                                <th>Hostel & Category</th>
+                                <th>Student Name</th>
+                                <th>Room</th>
+                                <th>Reason</th>
+                                <th>Return Time</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="passesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Complaints -->
+        <section id="tab-complaints" class="tab-content">
+            <div class="two-col">
+                <!-- Complaint Form -->
+                <div class="card">
+                    <h3>Log a Maintenance Complaint</h3>
+                    <form id="complaintForm" onsubmit="handleComplaintSubmit(event)">
+                        <div class="form-group">
+                            <label>Room No:</label>
+                            <input type="text" id="cmpRoom" required placeholder="e.g. 102" />
+                        </div>
+                        <div class="form-group">
+                            <label>Category:</label>
+                            <select id="cmpCategory">
+                                <option value="Electrical">Electrical (Fan/Light/Socket)</option>
+                                <option value="Plumbing">Plumbing (Tap/Washroom)</option>
+                                <option value="Wi-Fi">Wi-Fi / Internet</option>
+                                <option value="Carpentry">Carpentry / Furniture</option>
+                                <option value="Cleanliness">Cleanliness</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Description:</label>
+                            <textarea id="cmpDesc" rows="3" required placeholder="Describe the issue..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit Complaint</button>
+                    </form>
+                </div>
+
+                <!-- Metrics -->
+                <div class="card">
+                    <h3>Complaints Status Summary</h3>
+                    <div id="complaintMetrics" class="metric-row"></div>
+                    <p class="hint-text" style="margin-top: 15px;">Click buttons in the board below to move complaints
+                        between
+                        statuses.</p>
+                </div>
+            </div>
+
+            <!-- Kanban -->
+            <div class="card" style="margin-top: 15px;">
+                <h3>Complaint Resolution Board</h3>
+                <div class="kanban-grid">
+                    <div class="kanban-col">
+                        <h4 class="col-title pending">Pending</h4>
+                        <div id="colPending" class="col-body"></div>
+                    </div>
+                    <div class="kanban-col">
+                        <h4 class="col-title progress">In Progress</h4>
+                        <div id="colProgress" class="col-body"></div>
+                    </div>
+                    <div class="kanban-col">
+                        <h4 class="col-title resolved">Resolved</h4>
+                        <div id="colResolved" class="col-body"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mess -->
+        <section id="tab-mess" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Daily Mess Menu & Student Ratings</h3>
+                    <span class="badge">Today's Schedule</span>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Meal</th>
+                                <th>Timing</th>
+                                <th>Menu Items</th>
+                                <th>Avg. Rating</th>
+                                <th id="rateDishColHead">Rate Dish</th>
+                            </tr>
+                        </thead>
+                        <tbody id="messTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Notices -->
+        <section id="tab-notices" class="tab-content">
+            <div id="noticeAdminCard" class="card" style="display: none;">
+                <h3>Publish New Hostel Notice</h3>
+                <form id="noticeForm" onsubmit="handleNoticeSubmit(event)">
+                    <div class="two-col">
+                        <div class="form-group">
+                            <label>Notice Title:</label>
+                            <input type="text" id="noticeTitleInput" required
+                                placeholder="e.g. Mandatory Room Inspection" />
+                        </div>
+                        <div class="form-group">
+                            <label>Category:</label>
+                            <select id="noticeCategoryInput">
+                                <option value="Urgent">Urgent / Strict</option>
+                                <option value="General">General Notice</option>
+                                <option value="Mess">Mess / Dining</option>
+                                <option value="Maintenance">Maintenance & Repair</option>
+                                <option value="Event">Sports & Cultural</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Notice Details:</label>
+                        <textarea id="noticeContentInput" rows="3" required
+                            placeholder="Write the notice details here..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Publish Official Notice</button>
+                </form>
+            </div>
+
+            <div class="card" style="padding: 24px 28px;">
+                <h2 style="font-size: 1.6rem; font-weight: 800; color: #1e3a8a; margin-bottom: 22px;">Notice</h2>
+                <div id="noticesList"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h4 id="modalTitle">Bed Info</h4>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody" class="modal-body"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
