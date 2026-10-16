@@ -6,7 +6,7 @@ Built a simple web portal to handle common day-to-day hostel activities for both
 
 ### What's included:
 
-1. Dashboard & Profile: Shows resident details, registered hostel name, room/bed number, and gate curfew alert (10 PM for boys hostels, 7 PM for girls hostels).
+1. Dashboard & Profile: Shows resident details, registered hostel name, room/bed number, and gate curfew alert .
 
 2. Room & Bed Allocation: 2D interactive floor map across Ground, 1st, and 2nd floors. Students can click any vacant bed (marked in green) to apply for room allocation. Wardens can review the requested bed (marked in yellow) and approve or reject it, or allocate directly. Handles both 3-seater and single-seater hostels (BH-03, BH-04, BH-10, PG).
 
