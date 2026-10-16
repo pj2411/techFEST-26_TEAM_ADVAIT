@@ -1,4 +1,5 @@
-Problem Statement 3: Hostel Management System
+**Problem Statement 3:**
+Hostel Management System
 Build a frontend website that supports common hostel-related activities for students and administrators. It may present
 student information, room allocation, complaint tracking, mess menus, and hostel announcements. Mock data or
 browser storage may be used; a backend or database is not required.
